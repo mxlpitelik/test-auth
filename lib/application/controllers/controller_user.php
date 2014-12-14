@@ -67,6 +67,142 @@ class Controller_User extends Controller
         }
     }
     
+    function method_registration($params=null)
+    {
+        //проверка не авторизирован ли пользователь уже
+        if(isset($_SESSION['logged']) && $_SESSION['logged'])
+        {
+            $this->method_users();
+            return false;
+        }
+
+        if($params[1]=='try' && $_POST)
+        {
+            $this->loadModel('model_user');
+
+            $result=Array("result" => 55, "errors" => 0, "error" => Array() );
+
+            //проверяем на наличие ошибок и соотвествие валидностям передаваемых данных
+            //проверки на занятость мыла в ТЗ небыло поэтому не проверяем, хотя можно
+            if(!$this->check_emailvalid($_POST['email'])) 
+            {
+                $result['error']['email']=1;
+                $result['errors']=1;
+            }
+
+            if($_POST['password']!=$_POST['password2']) 
+            {
+                $result['error']['password2']=1;
+                $result['errors']=1;
+            }
+            
+            if( !$this->check_passvalid($_POST['password']) && $_POST['password'] ) 
+            {
+                $result['error']['password']=1;
+                $result['errors']=1;
+            }
+            
+            //если флаг ошибки мы так нигде и не поставили, то начинаем процедуру изминения пользователей
+            if(!$result['errors'])
+            {
+                if($this->model->addUser($_POST['email'], $_POST['password']))
+                {
+                    $_SESSION['logged']=1;
+                    $_SESSION['email']=$_POST['email'];
+                }
+                else $result['result']=0;
+            }
+            else $result['result']=0;
+
+            switch($params[2])
+            {
+                case 'json':
+                default:
+                    $this->loadJsonView($result);
+            }
+        }
+        else{
+            $this->loadView('registration.php', 'template_view.php', Array("title"=>'Авторизация', "css"=>'user.css', "js"=>'user.js'));
+        }
+    }
+    
+    //отображает страницу списка пользователей (/views/users.php), удаляет, редактирует, или
+    //создает пользователя если передаются соответствующие параметры
+    function method_users($params = null)
+    {
+        //проверка не авторизирован ли пользователь уже
+        if(!isset($_SESSION['logged']) || !$_SESSION['logged'])
+        {
+            $this->method_authorization();
+            return false;
+        }
+
+        $this->loadModel('model_user');
+
+        if($params[1])
+        switch($params[1])
+        {
+            default:
+            case 'edit':
+                $this->loadView('edit_users.php', 'template_cabinet.php', Array("title"=>'Редактироваие пользователей', 
+                                                                            "css"=>'cabinet.css', 
+                                                                            "js"=>'user.js', 
+                                                                            "userlist"=> $this->model->userList()
+                                                                           ));
+                break;
+            case 'save':
+                $result=Array("result" => 55, "errors" => 0, "deleted" => 0);
+
+                //проверяем на наличие ошибок и соотвествие валидностям передаваемых данных
+                //проверки на занятость мыла в ТЗ небыло поэтому не проверяем, хотя можно
+                foreach($_POST as $u)
+                {
+                    if($u['delete']) continue;
+
+                    if(
+                            !$u['id'] ||
+                            !$this->check_emailvalid($u['email']) || 
+                            (
+                                !$this->check_passvalid($u['password']) &&
+                                $u['password']
+                            )
+                        )
+                    {
+                        $result['errors']=1;
+                        $result['result']=0;
+
+                        break;
+                    }
+                }
+
+                //если флаг ошибки мы так нигде и не поставили, то начинаем процедуру изминения пользователей
+                if(!$result['errors'])
+                    foreach($_POST as $u)
+                    {
+                        if($u['delete']) 
+                        {
+                            $this->model->deleteUser($u['id']);
+                            continue;
+                        }
+                        $this->model->editUser($u);
+                    }
+
+                switch($params[2])
+                {
+                    case 'json':
+                    default:
+                        $this->loadJsonView($result);
+                }
+        }
+        else{
+            $this->loadView('users.php', 'template_cabinet.php', Array("title"=>'Личный кабинетЪ', 
+                                                                            "css"=>'cabinet.css', 
+                                                                            "js"=>'user.js', 
+                                                                            "userlist"=> $this->model->userList()
+                                                                           ));
+        }
+    }
+    
 
 //==========================================
     //проверка валидности мыла

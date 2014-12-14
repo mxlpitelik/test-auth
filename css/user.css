@@ -1,0 +1,45 @@
+body{
+    margin: 0px;
+    padding: 0px;
+}
+h1{
+    color: white;
+    background-color: #3399ff;
+    margin: 0px;
+    padding: 10px;
+}
+p{
+    padding: 30px;
+}
+div.loginarea, div.regarea{
+    background-color: #dcfdd3;
+    border: 1px solid #faf2c7;
+    border-radius: 2px;
+    width: 200px;
+    padding: 20px;
+    text-align: center;
+    color: gray;
+    font-size: 13px;
+}
+div.loginarea input, div.regarea input{
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid Gray;
+    border-radius: 2px;
+}
+div.loginarea p, div.regarea p{
+    color: red;
+    padding: 0px;
+    margin: 0px;
+    display: none;
+}
+div.loginarea a, div.regarea p{
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 25px;
+}
+
+div.regarea p.podskazka{
+    color: gray;
+    font: normal 10px Arial;
+}

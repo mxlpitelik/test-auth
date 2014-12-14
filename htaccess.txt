@@ -1,4 +1,4 @@
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* index.php [L]
+RewriteRule ^([^/]+)/?([^/]+)?/?([^/]+)?/?([^/]+)?/?$ index.php?controller=$1&method=$2&param1=$3&param2=$4 [L]

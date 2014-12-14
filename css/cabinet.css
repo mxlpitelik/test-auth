@@ -1,0 +1,52 @@
+table.head{
+    background-color: #55cc4c;
+    padding: 15px;
+    margin: 0px;
+    width: 100%;
+    color: white;
+}
+td.logo{
+    font-size: 25px;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: bold;
+}
+td.loggedas{
+    text-align: right;
+    vertical-align: middle;
+}
+
+td.loggedas a{
+    color: yellow;
+    font-weight: bold;
+}
+
+div.content{
+    padding: 20px;
+}
+table#userlist{
+    width: 600px;
+}
+table#userlist tr.head td{
+    padding-bottom: 5px;
+    padding-top: 5px;
+    font-weight: bold;
+    border-bottom: 1px solid Gray;
+    background-color: #f2f8ff !important;
+}
+table#userlist tr td{
+    padding: 5px;
+    border-bottom: 1px solid #c9e1ff;
+}
+table#userlist tr:hover{
+    padding: 5px;
+    border-bottom: 1px solid #c9e1ff;
+    background-color: #c9e1ff;
+    cursor: default;
+}
+
+#userdatanotsaved{
+    color: red;
+    font-weight: bold;
+    display: none;
+}
