@@ -1,0 +1,15 @@
+<h1>Авторизация</h1>
+<p>Введите свой адрес электронной почты и пароль</p>
+<center>
+<div class="loginarea">
+    <p id="auth_err_0">Неверная пара логин/пароль</p>
+    <p id="auth_err_1">Пользователь заблокирован</p>
+    <input type="text" id="email" placeholder="электронная почта"><br>
+    <input type="password" id="password" placeholder="пароль"><br>
+    <button onclick="login();">Войти</button><br>
+    <br>
+    Вы еще не зарегистрированы?<br>
+    <a href="/test-auth/user/registration">Зарегистрируйтесь</a>
+</div>
+</center>
+<p>*тут кстати тоже проверяется вошел ли пользователь, и если да, то кидает в кабинет</p>
