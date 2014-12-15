@@ -4,6 +4,8 @@
         <tr class="head">
             <td>id</td>
             <td>Email</td>
+            <td>Имя</td>
+            <td>Фамилия</td>
             <td>Активен</td>
             <td>facebook</td>
         </tr>
@@ -12,8 +14,10 @@
         echo '<tr>
                 <td>',$u['id'],'</td>
                 <td class="email">',$u['email'],'</td>
+                <td class="name">',$u['name'],'</td>
+                <td class="surname">',$u['surname'],'</td>
                 <td class="active">',($u['active']?'да':'нет'),'</td>
-                <td>-</td>
+                <td class="fb_id">',($u['fb_id']? $u['fb_id'] : 'не подключен' ),'</td>
             </tr>';
     }
 ?>

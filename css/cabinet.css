@@ -25,7 +25,6 @@ div.content{
     padding: 20px;
 }
 table#userlist{
-    width: 600px;
 }
 table#userlist tr.head td{
     padding-bottom: 5px;

@@ -8,8 +8,4 @@ require_once 'lib/application/core/view.php';
 require_once 'lib/application/core/controller.php';
 require_once 'lib/application/core/route.php';
 
-global $_app;
-$_app= new Index();
-$_app->start();
-        
 ?>

@@ -2,11 +2,11 @@
 
 class Model_User extends Model
 {
-    public function addUser($email, $password)
+    public function addUser($email, $password, $name='', $surname='', $fb_id=null)
     {	
         //вообще не мешало бы предусмотреть уникальные email в бд дабы избежать дублирования
-        $sql="INSERT INTO `users` SET `email`=:email, `active`=1, `password`=:password";
-        $vars=array(':password' => md5($password), ':email' => $email);
+        $sql="INSERT INTO `users` SET `email`=:email, `active`=1, `password`=:password, `name`=:n, `surname`=:sn, `fb_id`=:fbid";
+        $vars=array(':password' => md5($password), ':email' => $email, ':n' => $name, ':sn' => $surname, ':fbid' => $fb_id);
         $sth = $this->dbo->prepare($sql);
         return $sth->execute($vars);
     }
@@ -25,13 +25,13 @@ class Model_User extends Model
     {
         if($data['password']) 
         {
-            $sql="UPDATE `users` SET `email`=:email, `active`=:active, `password`=:password WHERE `id`=:id";
-            $vars=array(':password' => md5($data['password']), ':email' => $data['email'], ':active' => $data['active'], ':id' => $data['id']);
+            $sql="UPDATE `users` SET `name`=:name, `surname`=:surname, `email`=:email, `active`=:active, `password`=:password WHERE `id`=:id";
+            $vars=array(':password' => md5($data['password']), ':surname' => $data['surname'], ':name' => $data['name'], ':email' => $data['email'], ':active' => $data['active'], ':id' => $data['id']);
         }
         else
         {
-            $sql="UPDATE `users` SET `email`=:email, `active`=:active WHERE `id`=:id";
-            $vars=array(':email' => $data['email'], ':active' => $data['active'], ':id' => $data['id']);
+            $sql="UPDATE `users` SET `name`=:name, `surname`=:surname,  `email`=:email, `active`=:active WHERE `id`=:id";
+            $vars=array(':surname' => $data['surname'], ':name' => $data['name'], ':email' => $data['email'], ':active' => $data['active'], ':id' => $data['id']);
         }
         $sth = $this->dbo->prepare($sql);
         return $sth->execute($vars);
@@ -46,10 +46,24 @@ class Model_User extends Model
     }
     
     //проверка совпадения логин/пароль и активности
-    public function auth($email, $pass)
+    public function auth($email, $pass, $fb_id=null)
     {
-        $sth = $this->dbo->prepare("SELECT `active` FROM `users` WHERE `email`=:email AND `password`=:password");
-        $sth->execute(array(':password' => md5($pass), ':email' => $email));
+        if(strlen($pass)<6 && !$fb_id) return 0;
+        elseif($fb_id)
+        {
+            $sth = $this->dbo->prepare("UPDATE `users` SET `fb_id`=:fbid WHERE `email`=:email");
+            $sth->execute(array(':email' => $email, ':fbid' =>$fb_id));
+
+            $params=array(':email' => $email);
+            $sql="SELECT `active` FROM `users` WHERE `email`=:email";
+        }
+        else
+        {   
+            $params=array(':password' => md5($pass), ':email' => $email);
+            $sql="SELECT `active` FROM `users` WHERE `email`=:email AND `password`=:password";
+        }
+        $sth = $this->dbo->prepare($sql);
+        $sth->execute($params);
         $res = $sth->fetch(PDO::FETCH_ASSOC);
 
         if($res)

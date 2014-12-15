@@ -5,6 +5,8 @@
             <td>id</td>
             <td>Email</td>
             <td>Пароль</td>
+            <td>Имя</td>
+            <td>Фамилия</td>
             <td>Активен</td>
             <td>Удалить</td>
             <td>facebook</td>
@@ -15,9 +17,11 @@
                 <td>',$u['id'],'</td>
                 <td class="email"><input type="text" value="',$u['email'],'"></td>
                 <td class="password"><input type="text" value=""></td>
+                <td class="name"><input type="text" value="',$u['name'],'"></td>
+                <td class="surname"><input type="text" value="',$u['surname'],'"></td>
                 <td class="active"><input type="checkbox" ',($u['active']?'checked="checked"':''),'></td>
                 <td class="delete"><input type="checkbox"></td>
-                <td>-</td>
+                <td class="fb_id">',($u['fb_id']? $u['fb_id'] : 'не подключен' ),'</td>
             </tr>';
     }
 ?>

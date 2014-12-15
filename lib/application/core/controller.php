@@ -18,7 +18,7 @@ class Controller {
 //        echo $model_path;
         if(file_exists($model_path))
         {
-            include $model_path;
+            include_once $model_path;
             $this->model = new $model_name();
 
             return true;

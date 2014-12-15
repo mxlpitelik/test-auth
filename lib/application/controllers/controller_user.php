@@ -23,13 +23,27 @@ class Controller_User extends Controller
     
     function method_authorization($params=null)
     {
+        //авторизация через Фэйсбук
+        if(isset($_SESSION['fb']))
+        {
+            $this->loadModel('model_user');
+            $result=$this->model->auth($_SESSION['fb']['email'], null, $_SESSION['fb']['id']);
+            
+            //если пользователь не найден
+            if(!$result)
+                $result=$this->model->addUser($_SESSION['fb']['email'], 'none', $_SESSION['fb']['first_name'], $_SESSION['fb']['last_name'], $_SESSION['fb']['id']);
+          
+            $_SESSION['logged']=true;
+            $_SESSION['email']=$_SESSION['fb']['email'];
+            unset($_SESSION['fb']);
+        }
         //проверка не авторизирован ли пользователь уже
         if(isset($_SESSION['logged']) && $_SESSION['logged'])
         {
             $this->method_users();
             return false;
         }
-
+        
         //согласно ТЗ смотрим передаются ли параметры
         //если параметр 1 == try (пытаемся войти)
         //параметр 2 == json (ответ в формате json)
@@ -62,6 +76,7 @@ class Controller_User extends Controller
             }
         }
         else{
+            include('/lib/application/core/oauth.php');
             //открываем базовую страницу авторизации если ничего не передавалось
             $this->loadView('authorization.php', 'template_view.php', Array("title"=>'Авторизация', "css"=>'user.css', "js"=>'user.js'));
         }
@@ -96,6 +111,17 @@ class Controller_User extends Controller
                 $result['errors']=1;
             }
             
+            if(!strlen($_POST['name'])) 
+            {
+                $result['error']['name']=1;
+                $result['errors']=1;
+            }
+            if(!strlen($_POST['surname'])) 
+            {
+                $result['error']['surname']=1;
+                $result['errors']=1;
+            }
+            
             if( !$this->check_passvalid($_POST['password']) && $_POST['password'] ) 
             {
                 $result['error']['password']=1;
@@ -105,7 +131,7 @@ class Controller_User extends Controller
             //если флаг ошибки мы так нигде и не поставили, то начинаем процедуру изминения пользователей
             if(!$result['errors'])
             {
-                if($this->model->addUser($_POST['email'], $_POST['password']))
+                if($this->model->addUser($_POST['email'], $_POST['password'], $_POST['name'], $_POST['surname']))
                 {
                     $_SESSION['logged']=1;
                     $_SESSION['email']=$_POST['email'];
@@ -160,7 +186,9 @@ class Controller_User extends Controller
                     if($u['delete']) continue;
 
                     if(
-                            !$u['id'] ||
+                            !strlen($u['id']) ||
+                            !isset($u['name']) ||
+                            !isset($u['surname']) ||
                             !$this->check_emailvalid($u['email']) || 
                             (
                                 !$this->check_passvalid($u['password']) &&

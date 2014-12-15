@@ -8,6 +8,10 @@
     <input type="password" id="password" placeholder="пароль"><br>
     <button onclick="login();">Войти</button><br>
     <br>
+    Войти через социальные сети<br>
+    <a href="<?php echo oauth::fb_link(); ?>"><image src="https://www.facebook.com/images/fb_icon_325x325.png" width="32" height="32" /></a>
+    <br>
+    <br>
     Вы еще не зарегистрированы?<br>
     <a href="/test-auth/user/registration">Зарегистрируйтесь</a>
 </div>

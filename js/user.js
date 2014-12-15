@@ -29,11 +29,11 @@ function login()
 function register()
 {
      $.ajax({
-            data: ({email : $('#email').val(), password : $('#password').val(), password2 : $('#password2').val()}),
+            data: ({surname : $('#surname').val(), name : $('#name').val(), email : $('#email').val(), password : $('#password').val(), password2 : $('#password2').val()}),
             type: "POST",
             url: '/test-auth/user/registration/try/json/',
             dataType: "json",
-            error: function (jso) {  console.warn('Ошибка загрузки ответа сервера!'); },
+            error: function (jso) {  console.error(jso); console.warn('Ошибка загрузки ответа сервера!'); },
             success:function(jso){
                     if(jso.result==55)
                     {
@@ -64,6 +64,8 @@ function updateuserinfos()
         users[uid]={
             "id": uid,
             "email": $(this).find('td.email input').val(),
+            "name": $(this).find('td.name input').val(),
+            "surname": $(this).find('td.surname input').val(),
             "password": $(this).find('td.password input').val(),
             "active": $(this).find('td.active input:checked').length,
             "delete": $(this).find('td.delete input:checked').length
